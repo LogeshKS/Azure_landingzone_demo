@@ -37,3 +37,6 @@ variable "subnet_waf_cidr" {
 variable "subnet_bastion_cidr" {
   type = string
 }
+variable "subnet_jenkins_cidr" {
+  type = string
+}

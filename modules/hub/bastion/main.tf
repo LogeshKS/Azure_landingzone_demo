@@ -6,10 +6,12 @@ resource "azurerm_public_ip" "bastion" {
   sku                 = "Standard" # Required for Bastion
 }
 
-resource "azurerm_bastion_host" "hub" {
+resource "azurerm_bastion_host" "bastion_hub" {
   name                = "${local.stackname}-bastion"
   location            = var.location
   resource_group_name = var.rg_name
+
+  sku = "standard"
 
   ip_configuration {
     name                 = "bastion-ip-config"
