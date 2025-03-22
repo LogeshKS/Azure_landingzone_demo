@@ -7,12 +7,14 @@ resource "azurerm_linux_virtual_machine" "jenkins" {
   network_interface_ids = [azurerm_network_interface.jenkins.id]
   size                  = "Standard_DS2_v2"  # Adjust based on workload
 
+
   admin_username = "azureuser"
 
-  admin_ssh_key {
-    username   = "azureuser"
-    public_key = var.ssh_public_key
+  identity {
+    type = "SystemAssigned"
   }
+
+  secure_boot_enabled = true
 
   os_disk {
     caching              = "ReadWrite"
@@ -26,58 +28,24 @@ resource "azurerm_linux_virtual_machine" "jenkins" {
     version   = "latest"
   }
 
-  identity {
-    type = "SystemAssigned"
-  }
-
   tags = var.default_tags
+
+   custom_data = base64encode(<<EOF
+    #!/bin/bash
+    apt update && apt install -y azure-cli
+    sudo apt update
+    sudo apt install curl -y
+    sudo curl -LO "https://dl.k8s.io/release/v1.28.4/bin/linux/amd64/kubectl"
+    sudo chmod +x kubectl
+    sudo mv kubectl /usr/local/bin/
+    sudo snap install helm --classic
+    curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/download/v2.7.3/argocd-linux-amd64
+    chmod +x argocd-linux-amd64
+    sudo mv argocd-linux-amd64 /usr/local/bin/argocd
+    EOF
+  )
 }
 
-# Network Interface for Jenkins VM (No Public IP)
-resource "azurerm_network_interface" "jenkins" {
-  name                = "jenkins-nic"
-  location            = var.location
-  resource_group_name = var.resource_group_name
 
-  ip_configuration {
-    name                          = "internal"
-    subnet_id                     = var.jenkins_subnet_id
-    private_ip_address_allocation = "Dynamic"
-  }
-}
 
-# Network Security Group (NSG) for Jenkins (Restrict access only from Bastion)
-resource "azurerm_network_security_group" "jenkins" {
-  name                = "jenkins-nsg"
-  location            = var.location
-  resource_group_name = var.resource_group_name
 
-  security_rule {
-    name                       = "AllowBastionSSH"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = var.bastion_subnet_cidr
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "DenyAllInbound"
-    priority                   = 200
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "jenkins" {
-  network_interface_id      = azurerm_network_interface.jenkins.id
-  network_security_group_id = azurerm_network_security_group.jenkins.id
-}
