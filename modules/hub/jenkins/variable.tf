@@ -1,22 +1,21 @@
 variable "location" {
-  type    = string
-  default = "francecentral"
-}
-variable "project" {
-  type    = string
-  default = "hub-and-spoke"
-}
-variable "application" {
-  type    = string
-  default = "hub"
-}
-
-locals {
-  stackname = "${var.application}"
-}
-variable "rg_name" {
   type = string
 }
-variable "bastion_subnetid" {
-  
+variable "hub_rg_name" {
+  type = string
+}
+variable "default_tags" {
+  type = map(string)
+}
+variable "jenkins_subnet_id" {
+  type = string
+}
+variable "bastion_subnet_cidr" {
+  type = string
+}
+variable "acr_id" {
+  type = string
+}
+variable "aks_id" {
+  type = string
 }

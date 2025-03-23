@@ -7,7 +7,7 @@ resource "azurerm_public_ip" "bastion" {
 }
 
 resource "azurerm_bastion_host" "bastion_hub" {
-  name                = "${local.stackname}-bastion"
+  name                = "${var.env}-bastion"
   location            = var.location
   resource_group_name = var.rg_name
 
@@ -15,7 +15,7 @@ resource "azurerm_bastion_host" "bastion_hub" {
 
   ip_configuration {
     name                 = "bastion-ip-config"
-    subnet_id            = var.bastion_subnetid
+    subnet_id            = [var.bastion_subnetid]
     public_ip_address_id = azurerm_public_ip.bastion.id
   }
 }

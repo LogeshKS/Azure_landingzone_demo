@@ -1,0 +1,8 @@
+# Authenticate using Managed Identity
+az login --identity
+
+# Get AKS credentials
+az aks get-credentials --resource-group <RESOURCE_GROUP> --name <AKS_CLUSTER> --overwrite-existing
+
+# Test access
+kubectl get nodes

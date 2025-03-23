@@ -2,7 +2,7 @@
 resource "azurerm_network_security_group" "jenkins" {
   name                = "jenkins-nsg"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.hub_rg_name
 
   security_rule {
     name                       = "AllowBastionSSH"
@@ -12,7 +12,7 @@ resource "azurerm_network_security_group" "jenkins" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = var.bastion_subnet_cidr
+    source_address_prefix      = [var.bastion_subnet_cidr]
     destination_address_prefix = "*"
   }
 

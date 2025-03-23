@@ -2,7 +2,7 @@
 resource "azurerm_network_interface" "jenkins" {
   name                = "jenkins-nic"
   location            = var.location
-  resource_group_name = var.resource_group_name
+  resource_group_name = var.hub_rg_name
 
   ip_configuration {
     name                          = "internal"

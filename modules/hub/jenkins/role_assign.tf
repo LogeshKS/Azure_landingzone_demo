@@ -19,3 +19,4 @@ resource "azurerm_virtual_machine_extension" "aad_login" {
 #   role_definition_name = "Virtual Machine Administrator Login"
 #   principal_id         = var.aad_user_object_id
 # }
+

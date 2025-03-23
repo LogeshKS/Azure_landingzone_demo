@@ -11,6 +11,17 @@ variable "application" {
   default = "hub"
 }
 
+variable "env" {
+  
+}
+
+variable "hubname" {
+  
+}
+variable "ddosname" {
+  
+}
+
 locals {
   stackname = "${var.project}-${var.application}"
 }

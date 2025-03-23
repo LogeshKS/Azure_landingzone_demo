@@ -20,3 +20,6 @@ variable "rg_name" {
 variable "bastion_subnetid" {
   
 }
+variable "env" {
+  type = string
+}

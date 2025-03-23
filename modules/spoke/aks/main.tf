@@ -2,8 +2,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   name                = var.aks_cluster_name
   location            = var.location
   resource_group_name = var.spokergname
-  dns_prefix          = local.stack_name
-  kubernetes_version  = "1.19.6"
+  dns_prefix          = var.dns_prefixname
+  kubernetes_version  = "1.27.3" # Update to the latest supported version
 
   linux_profile {
     admin_username = var.node_admin_username
@@ -14,21 +14,22 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   default_node_pool {
-    name                 = format("aks${var.environment}pool")
-    node_count           = local.env_node_count
+    name                 = format("aks%s-pool", var.environment)
+    auto_scaling_enabled = true
+    min_count            = 1
+    max_count            = 5
     max_pods             = var.env_aks_max_pod_number
     type                 = "VirtualMachineScaleSets"
-    vm_size              = local.env_node_size
+    vm_size              = var.env_node_size
     os_disk_type         = "Ephemeral"
-    vnet_subnet_id       = azurerm_subnet.aks.id
-    orchestrator_version = "1.19.6"
-    availability_zones   = ["1", "2"]
-    tags                 = local.env_tags
+    vnet_subnet_id       = [var.aks_subnetid]
+    orchestrator_version = "1.27.3" # Match cluster version
+    zones                = ["1","2"]
+    tags                 = var.env_tags
   }
 
-  service_principal {
-    client_id     = azuread_service_principal.aks.application_id
-    client_secret = azuread_service_principal_password.aks.value
+  identity {
+    type = "SystemAssigned" # Recommended over service principal
   }
 
   network_profile {
@@ -36,5 +37,5 @@ resource "azurerm_kubernetes_cluster" "aks" {
     network_plugin    = "azure"
   }
 
-  tags = local.env_tags
+  tags = var.env_tags
 }

@@ -1,6 +1,6 @@
 #enabling ddos protecction plan
 resource "azurerm_network_ddos_protection_plan" "ddos_hub" {
-  name = local.stackname  
+  name = "${var.env}-${var.ddosname}"
   location = var.location
   resource_group_name = var.rgname
 }
@@ -8,7 +8,7 @@ resource "azurerm_network_ddos_protection_plan" "ddos_hub" {
 #creating vnet for hub
 
 resource "azurerm_virtual_network" "hub" {
-  name = local.stackname
+  name = "${var.env}-${var.hubname}"
   location = var.location
   resource_group_name = var.rgname
   address_space = [var.hubvnet_cidr]
