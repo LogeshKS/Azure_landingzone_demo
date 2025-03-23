@@ -10,6 +10,3 @@ variable "location" {
   type = string
 }
 
-variable "env_tags" {
-  type = map(string)
-}

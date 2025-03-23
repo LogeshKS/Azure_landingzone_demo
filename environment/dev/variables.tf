@@ -1,3 +1,10 @@
+variable "storage_account_name" {
+  
+}
+
+variable "containername" {
+  
+}
 variable "environment" {
 }
 variable "hub_rg_name" {
@@ -99,5 +106,14 @@ variable "agw_stackname" {
   
 }
 variable "appgw_tags" {
+  
+}
+variable "domain" {
+  
+}
+variable "exposed_dns" {
+  
+}
+variable "aks_private_lb_ip" {
   
 }

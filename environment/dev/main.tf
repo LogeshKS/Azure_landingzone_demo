@@ -20,14 +20,6 @@ module "Spoke_rg"{
     tags = var.spoke_tags
 }
 
-#denining backend rg
-module "backend_rg" {
-    source = "../../modules/resource_group"
-
-    rg_name = var.backend_rg
-    location = var.backend_location
-    tags = var.backend_tags
-}
 
 #defining hubVNET
 module "hubVnet" {
@@ -75,14 +67,12 @@ module "Jenkins" {
     location = var.hub_location
     hub_rg_name = var.hub_rg_name
     jenkins_subnet_id = [var.subnet_jenkins_cidr]
-
+    aks_subnet_cidr = var.subnet_aks_cidr
     #nsg
     bastion_subnet_cidr = [var.subnet_bastion_cidr]
 
-    acr_id = var.acr_id #need to correct
-    aks_id = var.aks_id
-
-    default_tags = var.jenkins_tags
+    acr_id = module.acr.acr_id
+    aks_id = module.Aks.aks_id
 }
 
 #defining spoke Vnet
@@ -106,15 +96,13 @@ module "Aks" {
 
     source = "../../modules/spoke/aks"
 
-    aks_cluster_name = var.aks_cluster_name
+    aks_cluster_name = "${var.environment}-${var.aks_cluster_name}"
     location = var.spoke_location
     spokergname = var.spoke_rg_name
     dns_prefixname = var.dns_prefixname
-    node_admin_username = var.node_admin_username
     env_aks_max_pod_number = var.max_pods
     env_node_size = var.env_node_size
-    aks_subnetid = [var.subnet_aks_cidr]
-    env_tags = var.aks_envtag
+    aks_subnetid = module.spokevnet.akssubnetid
     environment = var.environment
   
 }
@@ -127,7 +115,6 @@ module "acr" {
     spoke_rg_name = var.spoke_rg_name
     location = var.spoke_location
 
-    env_tags = var.acr_envtags
 }
 
 #defining app_gateway
@@ -140,8 +127,9 @@ module "agw"{
     location = var.hub_location
     default_tags = var.appgw_tags
     waf_subnet_id = [var.subnet_waf_cidr]
-    domain = ""
-    exposed_dns ="" 
+    domain = var.domain
+    exposed_dns = var.exposed_dns
+    aks_private_lb_ip = var.aks_private_lb_ip
 }
     
 

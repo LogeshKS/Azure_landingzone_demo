@@ -19,3 +19,6 @@ variable "domain" {
 variable "waf_subnet_id" {
   type = string
 }
+variable "aks_private_lb_ip" {
+  
+}

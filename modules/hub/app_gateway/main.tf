@@ -49,29 +49,11 @@ resource "azurerm_application_gateway" "appgw" {
     }
     disabled_rule_group {
       rule_group_name = "REQUEST-941-APPLICATION-ATTACK-XSS"
-      rules = [
-        941320,
-        941130,
-        941170,
-        941100,
-        941150,
-      941160]
+      rules = [941320, 941130, 941170, 941100, 941150, 941160]
     }
     disabled_rule_group {
       rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
-      rules = [
-        942130,
-        942200,
-        942260,
-        942430,
-        942100,
-        942370,
-        942340,
-        942450,
-        942150,
-        942410,
-        942440,
-      942390]
+      rules = [942130, 942200, 942260, 942430, 942100, 942370, 942340, 942450, 942150, 942410, 942440, 942390]
     }
     disabled_rule_group {
       rule_group_name = "REQUEST-930-APPLICATION-ATTACK-LFI"
@@ -91,12 +73,12 @@ resource "azurerm_application_gateway" "appgw" {
     tier = "WAF_v2"
   }
   autoscale_configuration {
-    min_capacity = 0
+    min_capacity = 1
     max_capacity = 2
   }
   gateway_ip_configuration {
     name      = local.appgw_ipconfig
-    subnet_id = [var.waf_subnet_id]
+    subnet_id = var.waf_subnet_id
   }
   frontend_ip_configuration {
     name                 = local.frontend_ip_configuration_name
@@ -145,7 +127,7 @@ resource "azurerm_application_gateway" "appgw" {
   # One per environment
   probe {
     name                                      = "dev"
-    host                                      = "dev.${var.domain}"
+    host                                      = var.domain
     interval                                  = 30
     path                                      = "/"
     pick_host_name_from_backend_http_settings = false

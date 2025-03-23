@@ -4,9 +4,7 @@ variable "location" {
 variable "hub_rg_name" {
   type = string
 }
-variable "default_tags" {
-  type = map(string)
-}
+
 variable "jenkins_subnet_id" {
   type = string
 }
@@ -18,4 +16,7 @@ variable "acr_id" {
 }
 variable "aks_id" {
   type = string
+}
+variable "aks_subnet_cidr" {
+  
 }

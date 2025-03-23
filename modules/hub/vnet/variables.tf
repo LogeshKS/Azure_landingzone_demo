@@ -38,7 +38,14 @@ variable "hubvnet_cidr" {
 }
 
 variable "hubvnet_tags" {
-  type = map(string)
+  type = map
+  default = {
+    Project     = "hub-and-spoke"
+    Application = "hub"
+    Automate    = "terraform"
+    Customer    = "all"
+    Environment = "common"
+  }
 }
 
 variable "subnet_waf_cidr" {

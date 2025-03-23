@@ -5,12 +5,9 @@ resource "azurerm_kubernetes_cluster" "aks" {
   dns_prefix          = var.dns_prefixname
   kubernetes_version  = "1.27.3" # Update to the latest supported version
 
-  linux_profile {
-    admin_username = var.node_admin_username
+  api_server_access_profile {
+    authorized_ip_ranges = [azurerm_network_interface.jenkins.private_ip_address]
 
-    ssh_key {
-      key_data = data.azurerm_key_vault_secret.pub.value
-    }
   }
 
   default_node_pool {
@@ -22,10 +19,10 @@ resource "azurerm_kubernetes_cluster" "aks" {
     type                 = "VirtualMachineScaleSets"
     vm_size              = var.env_node_size
     os_disk_type         = "Ephemeral"
-    vnet_subnet_id       = [var.aks_subnetid]
+    vnet_subnet_id       = var.aks_subnetid
     orchestrator_version = "1.27.3" # Match cluster version
     zones                = ["1","2"]
-    tags                 = var.env_tags
+    
   }
 
   identity {
@@ -37,5 +34,5 @@ resource "azurerm_kubernetes_cluster" "aks" {
     network_plugin    = "azure"
   }
 
-  tags = var.env_tags
+ 
 }

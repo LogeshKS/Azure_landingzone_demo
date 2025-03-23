@@ -3,6 +3,4 @@ resource "azurerm_container_registry" "acr" {
   resource_group_name      = var.spoke_rg_name
   location                 = var.location
   sku                      = "Standard"
-
-  tags = var.env_tags
 }

@@ -28,7 +28,6 @@ resource "azurerm_linux_virtual_machine" "jenkins" {
     version   = "latest"
   }
 
-  tags = var.default_tags
 
    custom_data = base64encode(<<EOF
     #!/bin/bash

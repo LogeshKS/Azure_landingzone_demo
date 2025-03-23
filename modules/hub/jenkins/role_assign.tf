@@ -1,7 +1,7 @@
 # Assign Role to allow Azure AD login
 resource "azurerm_role_assignment" "vm_ad_login" {
   scope                = azurerm_linux_virtual_machine.jenkins.id
-  role_definition_name = "Jenkins Virtual Machine Administrator Login"
+  role_definition_name = "Virtual Machine Administrator Login"
   principal_id         = data.azurerm_client_config.current.object_id
 }
 

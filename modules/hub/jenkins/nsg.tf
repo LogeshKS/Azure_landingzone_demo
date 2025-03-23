@@ -12,8 +12,20 @@ resource "azurerm_network_security_group" "jenkins" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = [var.bastion_subnet_cidr]
+    source_address_prefix      = var.bastion_subnet_cidr
     destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "AllowJenkinsToAKSNodes"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"  # SSH access to nodes
+    source_address_prefix      = azurerm_network_interface.jenkins.private_ip_address
+    destination_address_prefix = var.aks_subnet_cidr
   }
 
   security_rule {
